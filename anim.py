@@ -435,19 +435,27 @@ def get_characters(most_common: List):
 
 def comments_to_scene(comments: List[CommentBridge], name_music = "PWR", **kwargs):
     #Trial music
-    trialmusic = ["03 - Turnabout Courtroom - Trial",
+    trialoptions = ["03 - Turnabout Courtroom - Trial",
                   "03 - Turnabout Courtroom - Trial1",
                   "03 - Turnabout Courtroom - Trial2",
                   "03 - Turnabout Courtroom - Trial3",
                   "03 - Turnabout Courtroom - Trial4"]
 
     #Objection music
-    objectionmusic = ["08 - Pressing Pursuit _ Cornered",
+    objectionoptions = ["08 - Pressing Pursuit _ Cornered",
                       "08 - Pressing Pursuit _ Cornered1",
                       "08 - Pressing Pursuit _ Cornered2",
                       "08 - Pressing Pursuit _ Cornered3",
                       "08 - Pressing Pursuit _ Cornered4"]
+    #Randomize the musics
+    trialmusic = random.choice(trialoptions)
+    objectionmusic = random.choice(objectionoptions)
+    #Check if name_music is PWR
+    if name_music == "PWR":
+        print("Trial music will be playing: {}".format(trialmusic))
+        print("Objection music will be playing: {}".format(objectionmusic))
     scene = []
+
     for comment in comments:
         polarity = analizer.get_sentiment(comment.body)
         tokens = nlp(comment.body)
@@ -495,7 +503,7 @@ def comments_to_scene(comments: List[CommentBridge], name_music = "PWR", **kwarg
         scene.append(character_block)
     formatted_scenes = []
     if name_music == 'PWR':
-        last_audio = random.choice(trialmusic)
+        last_audio = trialmusic
     elif name_music == 'JFA':
         last_audio = "Phoenix Wright Ace Attorney_ Justice for All OST - Trial"
     else:
@@ -511,8 +519,8 @@ def comments_to_scene(comments: List[CommentBridge], name_music = "PWR", **kwarg
                 }
             )
             if name_music == 'PWR':
-                if last_audio != random.choice(objectionmusic):
-                    last_audio = random.choice(objectionmusic)
+                if last_audio != objectionmusic:
+                    last_audio = objectionmusic
                     change_audio = True
             elif name_music == 'JFA':
                 if last_audio != "Phoenix Wright Ace Attorney_ Justice for All OST - Pressing Pursuit _ Cross-Examine":

@@ -90,7 +90,7 @@ def do_video(config: List[Dict], output_filename):
                 #                     current_character_name = "The Player"
                 character_name = AnimText(
                     current_character_name,
-                    font_path="assets/igiari/Igiari.ttf",
+                    font_path="assets/igiari/comic.ttf",
                     font_size=12,
                     x=4,
                     y=113,
@@ -154,7 +154,7 @@ def do_video(config: List[Dict], output_filename):
                 _colour = None if "colour" not in obj else obj["colour"]
                 text = AnimText(
                     _text,
-                    font_path="assets/igiari/Igiari.ttf",
+                    font_path="assets/igiari/comic.ttf",
                     font_size=15,
                     x=5,
                     y=130,
@@ -166,7 +166,7 @@ def do_video(config: List[Dict], output_filename):
                 if "name" in obj:
                     _character_name = AnimText(
                         obj["name"],
-                        font_path="assets/igiari/Igiari.ttf",
+                        font_path="assets/igiari/comic.ttf",
                         font_size=12,
                         x=4,
                         y=113,
@@ -295,6 +295,24 @@ def do_video(config: List[Dict], output_filename):
         video.render(output_filename + '/' +str(part) + '.mp4')
     return sound_effects
 
+phoenix_objections = ["assets/Phoenix - objection.mp3",
+                      "assets/Phoenix - objection1.mp3",
+                      "assets/Phoenix - objection2.mp3",
+                      "assets/Phoenix - objection3.mp3",
+                      "assets/Phoenix - objection4.mp3"]
+
+edgeworth_objections = ["assets/Edgeworth - (English) objection.mp3",
+                        "assets/Edgeworth - (English) objection1.mp3",
+                        "assets/Edgeworth - (English) objection2.mp3",
+                        "assets/Edgeworth - (English) objection3.mp3",
+                        "assets/Edgeworth - (English) objection4.mp3"]
+
+default_objections = ["assets/Payne - Objection.mp3",
+                      "assets/Payne - Objection1.mp3",
+                      "assets/Payne - Objection2.mp3",
+                      "assets/Payne - Objection3.mp3",
+                      "assets/Payne - Objection4.mp3"]
+
 def do_audio(sound_effects: List[Dict], output_filename):
     audio_se = AudioSegment.empty()
     bip = AudioSegment.from_wav(
@@ -306,11 +324,9 @@ def do_audio(sound_effects: List[Dict], output_filename):
     long_bip = bip * 100
     long_bip -= 10
     spf = 1 / fps * 1000
-    pheonix_objection = AudioSegment.from_mp3("assets/Phoenix - objection.mp3")
-    edgeworth_objection = AudioSegment.from_mp3(
-        "assets/Edgeworth - (English) objection.mp3"
-    )
-    default_objection = AudioSegment.from_mp3("assets/Payne - Objection.mp3")
+    pheonix_objection = AudioSegment.from_mp3(random.choice(phoenix_objections))
+    edgeworth_objection = AudioSegment.from_mp3(random.choice(edgeworth_objections))
+    default_objection = AudioSegment.from_mp3(random.choice(default_objections))
     for obj in sound_effects:
         if obj["_type"] == "silence":
             audio_se += AudioSegment.silent(duration=int(obj["length"] * spf))
@@ -418,6 +434,19 @@ def get_characters(most_common: List):
 
 
 def comments_to_scene(comments: List[CommentBridge], name_music = "PWR", **kwargs):
+    #Trial music
+    trialmusic = ["03 - Turnabout Courtroom - Trial",
+                  "03 - Turnabout Courtroom - Trial1",
+                  "03 - Turnabout Courtroom - Trial2",
+                  "03 - Turnabout Courtroom - Trial3",
+                  "03 - Turnabout Courtroom - Trial4"]
+
+    #Objection music
+    objectionmusic = ["08 - Pressing Pursuit _ Cornered",
+                      "08 - Pressing Pursuit _ Cornered1",
+                      "08 - Pressing Pursuit _ Cornered2",
+                      "08 - Pressing Pursuit _ Cornered3",
+                      "08 - Pressing Pursuit _ Cornered4"]
     scene = []
     for comment in comments:
         polarity = analizer.get_sentiment(comment.body)
@@ -466,7 +495,7 @@ def comments_to_scene(comments: List[CommentBridge], name_music = "PWR", **kwarg
         scene.append(character_block)
     formatted_scenes = []
     if name_music == 'PWR':
-        last_audio = "03 - Turnabout Courtroom - Trial"
+        last_audio = random.choice(trialmusic)
     elif name_music == 'JFA':
         last_audio = "Phoenix Wright Ace Attorney_ Justice for All OST - Trial"
     else:
@@ -482,8 +511,8 @@ def comments_to_scene(comments: List[CommentBridge], name_music = "PWR", **kwarg
                 }
             )
             if name_music == 'PWR':
-                if last_audio != "08 - Pressing Pursuit _ Cornered":
-                    last_audio = "08 - Pressing Pursuit _ Cornered"
+                if last_audio != random.choice(objectionmusic):
+                    last_audio = random.choice(objectionmusic)
                     change_audio = True
             elif name_music == 'JFA':
                 if last_audio != "Phoenix Wright Ace Attorney_ Justice for All OST - Pressing Pursuit _ Cross-Examine":
